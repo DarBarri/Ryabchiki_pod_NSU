@@ -1,4 +1,5 @@
 *.meta
 **/Проект/TestProject/Logs
+**/Проект/TestProject/Temp
 **/Проект/.idea
 **/Проект/.vs
