@@ -1,8 +1,3 @@
 *.meta
-**/Проект/TestProject/Logs
-**/Проект/TestProject/Temp
-**/Проект/TestProject/Library
-**/Проект/TestProject/Library/PackageCache
-**/Проект/.idea
-**/Проект/TestProject/.idea
-**/Проект/.vs
+**/Проект/4220
+!**/Проект/4220/Assets
