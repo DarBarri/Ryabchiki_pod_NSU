@@ -10,16 +10,17 @@ public class FocusOn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log(1);
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit hit;
+
+            Physics.Raycast(ray, out hit);
             
             if (Physics.Raycast(ray, out hit, 100, layer))
             { 
-                Debug.Log(hit.point);
+                hit.collider.gameObject.GetComponent<HealthController>().Damage(Vector3.down, WeaponType.Axe);
                 // hit.collider.transform.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
             }
         }

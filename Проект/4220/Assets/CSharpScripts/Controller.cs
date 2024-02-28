@@ -15,6 +15,7 @@ public class Controller : MonoBehaviour
     
     public float speed = 7f;
 
+    private float _distancePath = 0f;
     private float _angle;
 
     private CharacterController _player = null;
@@ -50,6 +51,19 @@ public class Controller : MonoBehaviour
                                          Mathf.Abs(Input.GetAxis("Horizontal"))));
         }
 
+        if (_moveDirection.magnitude == 0f)
+        {
+            _distancePath = 0f;
+        }
+        else if (_distancePath > 5f)
+        {
+            GetComponentInChildren<AudioNotice>().CastSound(speed == 12? 15f: 7.5f);
+        }
+        else
+        {
+            _distancePath += (_moveDirection * speed * Time.deltaTime).magnitude;
+        }
+        
         animator.SetFloat("speed", _moveDirection.magnitude * (Input.GetAxis("Shift") == 1 ? 2 : 1));
 
         if (Input.GetKeyDown(KeyCode.LeftControl))

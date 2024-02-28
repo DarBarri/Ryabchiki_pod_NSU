@@ -8,10 +8,12 @@ using UnityEngine.Rendering;
 public class WallsOff : MonoBehaviour
 {
     public GameObject player;
+    
     public GameObject cam;
-    private List<GameObject> objList = new List<GameObject>();
+    
+    private List<WallRenderOff> _scriptList = new List<WallRenderOff>();
+    
     private GameObject _room = null;
-    public LayerMask layer;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,15 +21,13 @@ public class WallsOff : MonoBehaviour
         
         if (!_room.IsUnityNull())
         {
-            GameObject obj = _room.transform.Find("Walls").gameObject;
-
-            if (!obj.IsUnityNull())
+            Transform[] list = _room.GetComponentsInChildren<Transform>();
+            
+            for (int i = 0; i < list.Length; i++)
             {
-                int countChild = obj.transform.childCount;
-                
-                for (int j = 0; j < countChild; j++)
+                if (list[i].CompareTag("Wall"))
                 {
-                    objList.Add(obj.transform.GetChild(j).gameObject);
+                    _scriptList.Add(list[i].gameObject.GetComponent<WallRenderOff>());
                 }
             }
         }
@@ -35,60 +35,20 @@ public class WallsOff : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        for (int i = 0; i < objList.Count; i++)
+        Vector3 camDirection = cam.transform.TransformDirection(Vector3.right);
+        camDirection.y = 0f;
+        
+        for (int i = 0; i < _scriptList.Count; i++)
         {
-            MeshRenderer _wallMesh = objList[i].GetComponent<MeshRenderer>();
-            if (_wallMesh.isVisible)
-            {
-                Vector3 a = player.transform.position;
-                a.y = 0f;
-                Vector3 b = objList[i].transform.position;
-                b.y = 0f;
-                Ray ray = new Ray(objList[i].transform.position, player.transform.position + Vector3.up * 1.3f - objList[i].transform.position);
-                Debug.DrawRay(ray.origin, ray.direction, Color.red);
-                RaycastHit hit;
-
-                bool c = Physics.Raycast(ray.origin, ray.direction, out hit, layer);
-                
-                if (c && hit.collider.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
-                { 
-                    Vector3 _normal = objList[i].transform.TransformDirection(Vector3.right);
-                    _normal.y = 0f;
-                    
-                    if (Vector3.Dot(_normal, a - b) <= -0.1f)
-                    {
-                        _normal = -_normal;
-                    }
-                    
-                    Debug.DrawRay(objList[i].transform.position, _normal, Color.blue);
-                    
-                    Vector3 camDirection = cam.transform.TransformDirection(Vector3.right);
-                    camDirection.y = 0f;
-                    
-                    if (Vector3.Dot(_normal, camDirection) <= 0.1f)
-                    {
-                        objList[i].GetComponent<WallRenderOff>().Render(false);
-                    }
-                    else
-                    {
-                        objList[i].GetComponent<WallRenderOff>().Render(true);
-                    }
-                }
-                else
-                {
-                    objList[i].GetComponent<WallRenderOff>().Render(false);
-                }
-            }
+            _scriptList[i].RenderOff(player.transform.position, camDirection);
         }
     }
-
+    
     private void OnTriggerExit(Collider other)
     {
-        for (int i = 0; i < objList.Count; i++)
+        for (int i = 0; i < _scriptList.Count; i++)
         {
-            objList[i].GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            _scriptList[i].RenderOn();
         }
-        
-        objList.Clear();
     }
 }

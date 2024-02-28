@@ -103,9 +103,4 @@ public class RenderOff : MonoBehaviour
             }
         }
     }
-    private void OnDrawGizmosSelected ()
-    {
-        Gizmos.DrawWireSphere(player.position + Vector3.up * radius, radius);
-        Debug.DrawRay(ray.origin, ray.direction * Vector3.Distance(cam.position, player.position + vector), Color.red);
-    }
 }
