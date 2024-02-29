@@ -8753,6 +8753,14 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 2980608650708697115, guid: 79aee4373445c3544a0aba3c9727edda, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980608650708697115, guid: 79aee4373445c3544a0aba3c9727edda, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 3000413645537007578, guid: 79aee4373445c3544a0aba3c9727edda, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.28

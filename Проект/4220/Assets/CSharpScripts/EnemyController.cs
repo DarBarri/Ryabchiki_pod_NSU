@@ -33,7 +33,8 @@ public class EnemyController : MonoBehaviour
     private bool _isHearingPlayer = false;
 
     private Vector3 visionPoint, hearingPoint;
-    
+
+    private bool flag = true;
     //Patrolling
     public Vector3 walkPoint;
     private bool walkPointSet;
@@ -46,7 +47,7 @@ public class EnemyController : MonoBehaviour
     //States
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
-
+    
     public Vector3 targetPoint = Vector3.zero;
 
     private void Awake()
@@ -61,20 +62,18 @@ public class EnemyController : MonoBehaviour
 
         visionPoint = player.position;
 
-        if (!Input.GetKey(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            _isHearingPlayer = head.GetComponent<EnemyHearing>().Hear(agent);
-            hearingPoint = player.position;
-        }
-        else
-        {
-            Debug.Log(1);
+            flag = !flag;
             _isHearingPlayer = false;
         }
 
-        if (_isSeenPlayer && playerInAttackRange)
-        {
-            _currentState = EnemyState.Attack;
+        Debug.Log(flag);
+        
+        if (flag)
+        { 
+            _isHearingPlayer = head.GetComponent<EnemyHearing>().Hear(agent);
+            hearingPoint = player.position;
         }
         
         switch (_currentState)
@@ -165,7 +164,7 @@ public class EnemyController : MonoBehaviour
             }
         }
         
-        // Debug.Log($"State = {_currentState}, Hear = {_isHearingPlayer}, Vision = {_isSeenPlayer}");
+        Debug.Log($"State = {_currentState}, Hear = {_isHearingPlayer}, Vision = {_isSeenPlayer}");
     }
     
     private void Patrolling()
@@ -219,7 +218,8 @@ public class EnemyController : MonoBehaviour
         agent.SetDestination(targetPoint);
         
         Vector3 distanceToWalkPoint = transform.position - targetPoint;
-
+        
+        Debug.Log(distanceToWalkPoint.magnitude);
         return distanceToWalkPoint.magnitude < 1f;
     }
     
