@@ -43,7 +43,7 @@ public class WallRenderOff : MonoBehaviour
             Color color = _wallMesh.material.color;
             color.a = _albedo > 1f ? 1f : _albedo;
             _wallMesh.material.color = color;
-            _wallMesh.material.renderQueue = 3000;
+            _wallMesh.material.renderQueue = 1500;
         }
     }
 
