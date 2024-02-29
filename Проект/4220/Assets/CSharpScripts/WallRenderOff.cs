@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.XR;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -20,9 +21,9 @@ public class WallRenderOff : MonoBehaviour
         _wallMesh.material.SetInt("_ZWrite", 1);
     }
     
-    private void Update()
+    private void ChangeAlbedo(bool rend, int queue)
     {
-        if (_less && _albedo > 0.25f)
+        if (rend && _albedo > 0.25f)
         {
             _albedo -= 5f * Time.deltaTime;
     
@@ -31,8 +32,9 @@ public class WallRenderOff : MonoBehaviour
             Color color = _wallMesh.material.color;
             color.a = _albedo < 0.25f ? 0.25f : _albedo;
             _wallMesh.material.color = color;
+            _wallMesh.material.renderQueue = 3000+queue;
         }
-        else if (!_less && _albedo < 1f)
+        else if (!rend && _albedo < 1f)
         {
             _albedo += 5f * Time.deltaTime;
             
@@ -41,10 +43,11 @@ public class WallRenderOff : MonoBehaviour
             Color color = _wallMesh.material.color;
             color.a = _albedo > 1f ? 1f : _albedo;
             _wallMesh.material.color = color;
+            _wallMesh.material.renderQueue = 3000;
         }
     }
 
-    public void RenderOff(Vector3 player, Vector3 mainCam)
+    public void RenderOff(Vector3 player, Vector3 mainCam, int queue)
     {
         if (_wallMesh.isVisible)
         {
@@ -85,10 +88,13 @@ public class WallRenderOff : MonoBehaviour
                 _less = false;
             }
         }
+        ChangeAlbedo(_less, queue);
     }
 
     public void RenderOn()
     {
         _less = false;
+
+        ChangeAlbedo(_less, 0);
     }
 }

@@ -37,10 +37,10 @@ public class WallsOff : MonoBehaviour
     {
         Vector3 camDirection = cam.transform.TransformDirection(Vector3.right);
         camDirection.y = 0f;
-        
-        for (int i = 0; i < _scriptList.Count; i++)
+        int vol = _scriptList.Count;
+        for (int i = 0; i < vol; i++)
         {
-            _scriptList[i].RenderOff(player.transform.position, camDirection);
+            _scriptList[i].RenderOff(player.transform.position, camDirection, vol-i);
         }
     }
     
