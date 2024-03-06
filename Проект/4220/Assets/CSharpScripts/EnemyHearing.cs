@@ -9,25 +9,34 @@ public class EnemyHearing : MonoBehaviour
     public LayerMask layer;
     private LayerMask _playerLayer = 1 << 12;
     private Transform player;
+    public NavMeshAgent agent;
+    private float _maxVolumeSound;
+    private int _targetIndex;
+    private int index;
 
     private void Start()
     {
         player = GameObject.Find("Player").GetComponent<Transform>();
     }
 
-    public bool Hear(NavMeshAgent agent)
+    public int Hear(SoundSource[] soundSources)
     {
-        if (Physics.CheckSphere(transform.position, 30f, _playerLayer))
+        _maxVolumeSound = 0f;
+        _targetIndex = -1;
+        index = 0;
+        
+        foreach (SoundSource soundSource in soundSources)
         {
-            float dist = Vector3.Distance(transform.position, player.position + Vector3.up);
+            Vector3 point = soundSource.Point;
+            float dist = Vector3.Distance(transform.position, point);
             float straightDistance = 0f;
 
             RaycastHit hit, newHit;
 
-            Ray ray = new Ray(transform.position, player.position + Vector3.up - transform.position);
+            Ray ray = new Ray(transform.position, point - transform.position);
 
             RaycastHit[] hits = Physics.RaycastAll(ray,
-                Vector3.Distance(transform.position, player.position + Vector3.up * 2f), layer,
+                Vector3.Distance(transform.position, point), layer,
                 QueryTriggerInteraction.Ignore);
 
             Debug.DrawRay(ray.origin, ray.direction * dist, Color.red);
@@ -38,7 +47,7 @@ public class EnemyHearing : MonoBehaviour
 
             for (int i = 1; i < hits.Length; i++)
             {
-                ray = new Ray(hit.point, player.position - hit.point);
+                ray = new Ray(hit.point, point - hit.point);
 
                 Physics.Raycast(ray, out newHit, dist, layer, QueryTriggerInteraction.Ignore);
 
@@ -47,7 +56,7 @@ public class EnemyHearing : MonoBehaviour
             }
 
             NavMeshPath path = new NavMeshPath();
-            agent.CalculatePath(player.position, path);
+            agent.CalculatePath(point, path);
 
             float curveDistance = 0f;
 
@@ -56,9 +65,18 @@ public class EnemyHearing : MonoBehaviour
                 curveDistance += Vector3.Distance(path.corners[i], path.corners[i - 1]);
             }
 
-            // Debug.Log($"{straightDistance}, {curveDistance}");
-            return 15f > Mathf.Min(straightDistance, curveDistance);
+            straightDistance = GlobalDictionary.Sound[soundSource.Type].Radius - straightDistance;
+            curveDistance = GlobalDictionary.Sound[soundSource.Type].Radius - curveDistance;
+
+            if (_maxVolumeSound < Math.Max(straightDistance, curveDistance))
+            {
+                _maxVolumeSound = Math.Max(straightDistance, curveDistance);
+                _targetIndex = index;
+            }
+
+            index++;
         }
-        else return false;
+
+        return _targetIndex;
     }
 }

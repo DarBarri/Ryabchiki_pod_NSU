@@ -29,6 +29,7 @@ public class Controller : MonoBehaviour
     public bool isCrouching = false;
     public float crouchHeight = 0.5f;
     public float normalHeight = 2.0f;
+    private SoundType _soundType;
 
     void Awake()
     {
@@ -43,25 +44,13 @@ public class Controller : MonoBehaviour
         if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
         {
             _moveDirection = new Vector3(0f, 0f, 0f);
+            speed = 0f;
         }
         else
         {
             _moveDirection = new Vector3(Input.GetAxis("Vertical"), 0f, -Input.GetAxis("Horizontal")) /
                              (Mathf.Sqrt(Mathf.Abs(Input.GetAxis("Vertical")) +
                                          Mathf.Abs(Input.GetAxis("Horizontal"))));
-        }
-
-        if (_moveDirection.magnitude == 0f)
-        {
-            _distancePath = 0f;
-        }
-        else if (_distancePath > 5f)
-        {
-            GetComponentInChildren<AudioNotice>().CastSound(speed == 12? 15f: 7.5f);
-        }
-        else
-        {
-            _distancePath += (_moveDirection * speed * Time.deltaTime).magnitude;
         }
         
         animator.SetFloat("speed", _moveDirection.magnitude * (Input.GetAxis("Shift") == 1 ? 2 : 1));
@@ -72,6 +61,26 @@ public class Controller : MonoBehaviour
             _player.height = isCrouching ? crouchHeight : normalHeight;
         }
 
+        switch (speed)
+        {
+            case 12:
+            {
+                _soundType = SoundType.Running;
+                break;
+            }
+            case 7:
+            {
+                _soundType = SoundType.Walking;
+                break;
+            }
+            case 0:
+            {
+                _soundType = SoundType.Stand;
+                break;
+            }
+        }
+        
+        GetComponent<AudioNotice>().SetSoundType(_soundType);
         _moveDirection = cam.transform.TransformDirection(_moveDirection);
 
         RotatePlayer();

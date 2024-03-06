@@ -1,7 +1,32 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct SoundSource
+{
+    public int HashCode;
+    public SoundType Type;
+    public Vector3 Point;
+
+    public SoundSource(int hashCode, SoundType type, Vector3 point)
+    {
+        HashCode = hashCode;
+        Type = type;
+        Point = point;
+    }
+}
+public struct SoundData
+{
+    public int ID;
+    public float Radius;
+
+    public SoundData(int id, float radius)
+    {
+        ID = id;
+        Radius = radius;
+    }
+}
 public struct WeaponData
 {
     public int ID;
@@ -52,6 +77,17 @@ public class GlobalDictionary : MonoBehaviour
         { WeaponType.Sword, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
         { WeaponType.Saber, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) }
     };
+
+    public static Dictionary<SoundType, SoundData> Sound = new Dictionary<SoundType, SoundData>()
+    {
+        { SoundType.Running, new SoundData(0, 30f)},
+        { SoundType.Scream, new SoundData(0, 30f)},
+        { SoundType.Walking, new SoundData(0, 15f)},
+        { SoundType.SitDown, new SoundData(0, 0f)},
+        { SoundType.Stand, new SoundData(0, 0f)},
+    };
 }
 
 public enum WeaponType {Pistol, AutoRifle, Shotgun, NonAutoRifle, MachineGun, SniperRifle, SubMachineGun, Machete, Axe, Blockhead, Knife, Mace, Fist, Sword, Saber}
+
+public enum SoundType {Running, Scream, Walking, SitDown, Stand}

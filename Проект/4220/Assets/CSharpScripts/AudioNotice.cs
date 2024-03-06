@@ -5,34 +5,21 @@ using UnityEngine;
 
 public class AudioNotice : MonoBehaviour
 {
-    private SphereCollider trigger;
-
-    private void Awake()
+    private GameObject _soundManager;
+    public SoundType _type;
+    private void Start()
     {
-        trigger = GetComponent<SphereCollider>();
-        trigger.enabled = false;
-    }
-    
-    public void CastSound(float sound)
-    {
-        if (!trigger.enabled)
-        {
-            trigger.radius = sound;
-            trigger.enabled = true;
-
-            StartCoroutine(SoundOff());
-        }
+        _soundManager = GameObject.Find("SoundManager");
+        _soundManager.GetComponent<SoundManager>().AddSoundGameObject(gameObject);
     }
 
-    IEnumerator SoundOff()
+    public SoundSource CastSound()
     {
-        yield return new WaitForFixedUpdate();
-        trigger.radius = 0f;
-        trigger.enabled = false;
+        return new SoundSource(gameObject.GetHashCode(), _type, transform.position);
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void SetSoundType(SoundType type)
     {
-        Debug.Log(other.name);
+        _type = type;
     }
 }

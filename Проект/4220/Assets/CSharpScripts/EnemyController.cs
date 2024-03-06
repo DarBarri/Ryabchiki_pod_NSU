@@ -31,6 +31,7 @@ public class EnemyController : MonoBehaviour
     private GameObject head;
     private bool _isSeenPlayer = false;
     private bool _isHearingPlayer = false;
+    private bool _isHearingSomething = false;
 
     private Vector3 visionPoint, hearingPoint;
 
@@ -49,6 +50,7 @@ public class EnemyController : MonoBehaviour
     public bool playerInSightRange, playerInAttackRange;
     
     public Vector3 targetPoint = Vector3.zero;
+    private int _targetIndex;
 
     private void Awake()
     {
@@ -56,24 +58,28 @@ public class EnemyController : MonoBehaviour
         head = GameObject.Find("Head");
     }
 
-    private void Update()
+    public void Action(SoundSource[] soundSources)
     {
         _isSeenPlayer = head.GetComponent<EnemyVision>().Vision();
 
         visionPoint = player.position;
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            flag = !flag;
-            _isHearingPlayer = false;
-        }
-
-        Debug.Log(flag);
         
-        if (flag)
-        { 
-            _isHearingPlayer = head.GetComponent<EnemyHearing>().Hear(agent);
-            hearingPoint = player.position;
+        _targetIndex = head.GetComponent<EnemyHearing>().Hear(soundSources);
+
+        if (_targetIndex != -1)
+        {
+            _isHearingPlayer = (_targetIndex == 0);
+            _isHearingSomething = (_targetIndex != -1);
+
+            if (_isHearingSomething)
+            {
+                hearingPoint = soundSources[_targetIndex].Point;
+            }
+        }
+        else
+        {
+            _isHearingPlayer = false;
+            _isHearingSomething = false;
         }
         
         switch (_currentState)
@@ -87,7 +93,7 @@ public class EnemyController : MonoBehaviour
                     
                     ChaseEntity();
                 }
-                else if (_isHearingPlayer && !_isSeenPlayer)
+                else if (_isHearingSomething && !_isSeenPlayer)
                 {
                     _currentState = EnemyState.Checking;
                     targetPoint = hearingPoint;
@@ -112,7 +118,7 @@ public class EnemyController : MonoBehaviour
                 else
                 {
                     _currentState = EnemyState.Checking;
-                    targetPoint = _isHearingPlayer ? hearingPoint : targetPoint;
+                    targetPoint = _isHearingSomething ? hearingPoint : targetPoint;
                     
                     CheckPoint();
                 }
@@ -120,16 +126,26 @@ public class EnemyController : MonoBehaviour
             }
             case EnemyState.Chasing:
             {
-                if (_isSeenPlayer)
+                if ((_isSeenPlayer || _isHearingPlayer) && !playerInAttackRange)
+                {
+                    _currentState = EnemyState.Attack;
+                    
+                    AttackEntity();
+                }
+                else if (_isSeenPlayer)
                 {
                     targetPoint = visionPoint;
+                    _currentState = EnemyState.Chasing;
+                    
+                    ChaseEntity();
                 }
                 else if (_isHearingPlayer && !_isSeenPlayer)
                 {
                     targetPoint = hearingPoint;
+                    _currentState = EnemyState.Chasing;
+                    
+                    ChaseEntity();
                 }
-                
-                ChaseEntity();
                 
                 break;
             }
@@ -147,7 +163,7 @@ public class EnemyController : MonoBehaviour
                     
                     ChaseEntity();
                 }
-                else if (_isHearingPlayer && !_isSeenPlayer)
+                else if (_isHearingSomething && !_isSeenPlayer)
                 {
                     targetPoint = hearingPoint;
                     _currentState = EnemyState.Chasing;
@@ -164,7 +180,7 @@ public class EnemyController : MonoBehaviour
             }
         }
         
-        Debug.Log($"State = {_currentState}, Hear = {_isHearingPlayer}, Vision = {_isSeenPlayer}");
+        Debug.Log($"State = {_currentState}, Hear = {_isHearingSomething}, Vision = {_isSeenPlayer}");
     }
     
     private void Patrolling()
