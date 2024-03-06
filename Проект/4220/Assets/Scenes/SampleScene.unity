@@ -4538,11 +4538,11 @@ GameObject:
   - component: {fileID: 843717782}
   m_Layer: 14
   m_Name: Enemy
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &843717772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6811,7 +6811,7 @@ MonoBehaviour:
   layer:
     serializedVersion: 2
     m_Bits: 4294967295
-  agent: {fileID: 0}
+  agent: {fileID: 1321010810}
 --- !u!1 &1163070128
 GameObject:
   m_ObjectHideFlags: 0
@@ -8153,16 +8153,16 @@ GameObject:
   - component: {fileID: 1321010814}
   - component: {fileID: 1321010813}
   - component: {fileID: 1321010812}
-  - component: {fileID: 1321010811}
   - component: {fileID: 1321010810}
   - component: {fileID: 1321010809}
+  - component: {fileID: 1321010816}
   m_Layer: 14
   m_Name: Enemy (1)
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1321010809
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8206,38 +8206,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1321010811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1321010808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a6d7b4c2601b3c43b39e66e5f569ab5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0
-  layer:
-    serializedVersion: 2
-    m_Bits: 22528
-  agent: {fileID: 1321010810}
-  player: {fileID: 1535776954}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 1024
-  whatIsPlayer:
-    serializedVersion: 2
-    m_Bits: 4096
-  walkPoint: {x: 0, y: 0, z: 0}
-  walkPointRange: 10
-  timeBetweenAttacks: 0.5
-  sightRange: 20
-  attackRange: 2
-  playerInSightRange: 0
-  playerInAttackRange: 0
-  targetPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &1321010812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8321,6 +8289,49 @@ Transform:
   - {fileID: 1087485059}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &1321010816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321010808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e512042ba1db14b9eb3bfe786e672e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: 1321010810}
+  speed: 0
+  layer:
+    serializedVersion: 2
+    m_Bits: 22528
+  player: {fileID: 1535776954}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1024
+  whatIsPlayer:
+    serializedVersion: 2
+    m_Bits: 4096
+  visionPoint: {x: 0, y: 0, z: 0}
+  hearingPoint: {x: 0, y: 0, z: 0}
+  walkPoint: {x: 0, y: 0, z: 0}
+  walkPointRange: 10
+  timeBetweenAttacks: 0.5
+  sightRange: 20
+  attackRange: 3
+  playerInSightRange: 0
+  playerInAttackRange: 0
+  targetPoint: {x: 0, y: 0, z: 0}
+  _isSeenPlayer: 0
+  _isHearingPlayer: 0
+  _isHearingSomething: 0
+  patrollingState: {fileID: 11400000, guid: 6f56baa9e4560ef48adccfb95eb8bac4, type: 2}
+  checkingState: {fileID: 11400000, guid: f15d5a18b9b0f844396eadd9847f1943, type: 2}
+  chasingState: {fileID: 11400000, guid: 074ae5edcd714e047b95526243ae76c4, type: 2}
+  attackState: {fileID: 11400000, guid: 339b4d89cfb9ebe45a642c11880b824e, type: 2}
+  hideAndSeekState: {fileID: 11400000, guid: 35f5d32a01be8594c8c89558f190c608, type: 2}
+  currentState: {fileID: 0}
 --- !u!1 &1414344882
 GameObject:
   m_ObjectHideFlags: 0
