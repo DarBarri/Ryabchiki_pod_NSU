@@ -34,8 +34,7 @@ public class EnemyController : MonoBehaviour
     private bool _isHearingSomething = false;
 
     private Vector3 visionPoint, hearingPoint;
-
-    private bool flag = true;
+    
     //Patrolling
     public Vector3 walkPoint;
     private bool walkPointSet;

@@ -47,8 +47,7 @@ public class ChasingState : State
         enemy.agent.SetDestination(enemy.targetPoint);
         
         Vector3 distanceToWalkPoint = enemy.transform.position - enemy.targetPoint;
-        
-        Debug.Log(distanceToWalkPoint.magnitude);
+
         return distanceToWalkPoint.magnitude < 1f;
     }
 }

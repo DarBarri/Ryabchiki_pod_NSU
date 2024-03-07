@@ -6,32 +6,22 @@ using UnityEngine.AI;
 public class EnemyStateController : MonoBehaviour
 {
     public NavMeshAgent agent;
-
-    public float speed;
-    
-    public LayerMask layer;
     
     public Transform player;
-
-    public LayerMask whatIsGround, whatIsPlayer;
 
     private EnemyState _currentState;
 
     public Vector3 visionPoint, hearingPoint;
-
-    private bool flag = true;
+    
     //Patrolling
-    public Vector3 walkPoint;
     private bool walkPointSet;
-    public float walkPointRange;
     
     //Attacking 
-    public float timeBetweenAttacks;
     private bool alreadyAttacked;
     
     //States
-    public float sightRange, attackRange;
-    public bool playerInSightRange, playerInAttackRange;
+    public float attackRange;
+    public bool playerInAttackRange;
     
     public Vector3 targetPoint = Vector3.zero;
     private int _targetIndex;
@@ -83,6 +73,7 @@ public class EnemyStateController : MonoBehaviour
 
         playerInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
         
+        Debug.Log(currentState.name);
         if (!currentState.IsFinished)
         {
             currentState.Action();

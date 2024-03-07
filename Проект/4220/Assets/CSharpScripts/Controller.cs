@@ -14,8 +14,7 @@ public class Controller : MonoBehaviour
     public LayerMask layer;
     
     public float speed = 7f;
-
-    private float _distancePath = 0f;
+    
     private float _angle;
 
     private CharacterController _player = null;

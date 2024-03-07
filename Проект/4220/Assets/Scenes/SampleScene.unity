@@ -8302,25 +8302,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1321010810}
-  speed: 0
-  layer:
-    serializedVersion: 2
-    m_Bits: 22528
   player: {fileID: 1535776954}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 1024
-  whatIsPlayer:
-    serializedVersion: 2
-    m_Bits: 4096
   visionPoint: {x: 0, y: 0, z: 0}
   hearingPoint: {x: 0, y: 0, z: 0}
-  walkPoint: {x: 0, y: 0, z: 0}
-  walkPointRange: 10
-  timeBetweenAttacks: 0.5
-  sightRange: 20
   attackRange: 3
-  playerInSightRange: 0
   playerInAttackRange: 0
   targetPoint: {x: 0, y: 0, z: 0}
   _isSeenPlayer: 0
@@ -8931,6 +8916,10 @@ PrefabInstance:
     - target: {fileID: 3000413645537007578, guid: 79aee4373445c3544a0aba3c9727edda, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768165426758713390, guid: 79aee4373445c3544a0aba3c9727edda, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8797505447332160436, guid: 79aee4373445c3544a0aba3c9727edda, type: 3}
       propertyPath: m_Name
