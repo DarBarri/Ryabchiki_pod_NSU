@@ -12,6 +12,7 @@ public class CheckingState : State
 
     public override void Action()
     {
+        enemy.agent.speed = 2f;
         if (enemy._isSeenPlayer && !enemy.playerInAttackRange)
         {
             enemy.SetState(enemy.chasingState);
@@ -24,12 +25,11 @@ public class CheckingState : State
             enemy.targetPoint = enemy._isHearingSomething ? enemy.hearingPoint : enemy.targetPoint;
         }
         
-        enemy.agent.speed = 5f;
-        
         bool targetIsAchieve = AchieveTarget();
 
         if (targetIsAchieve)
         {
+            enemy.ignoringHashCode.Add(enemy.currentHashCode);
             enemy.SetState(enemy.patrollingState);
         }
     }

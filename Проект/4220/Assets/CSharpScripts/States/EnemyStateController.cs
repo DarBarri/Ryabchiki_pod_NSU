@@ -36,8 +36,10 @@ public class EnemyStateController : MonoBehaviour
     public State chasingState;
     public State attackState;
     public State hideAndSeekState;
-
+    public int targetHashCode;
+    public List<int> ignoringHashCode;
     public State currentState;
+    public int currentHashCode;
 
     private void Awake()
     {
@@ -45,10 +47,26 @@ public class EnemyStateController : MonoBehaviour
         targetPoint = transform.position;
         agent = GetComponent<NavMeshAgent>();
         head = GameObject.Find("Head");
+        ignoringHashCode = new List<int>();
     }
 
     public void Action(SoundSource[] soundSources)
     {
+        List<int> newIgnoringHashCode = new List<int>();
+        
+        foreach (int hashCode in ignoringHashCode)
+        {
+            foreach (SoundSource variableSoundSource in soundSources)
+            {
+                if (hashCode == variableSoundSource.HashCode)
+                {
+                    newIgnoringHashCode.Add(hashCode);
+                    break;
+                }
+            }
+        }
+
+        ignoringHashCode = newIgnoringHashCode;
         _isSeenPlayer = head.GetComponent<EnemyVision>().Vision();
 
         visionPoint = player.position;
@@ -57,11 +75,23 @@ public class EnemyStateController : MonoBehaviour
 
         if (_targetIndex != -1)
         {
-            _isHearingPlayer = (_targetIndex == 0);
-            _isHearingSomething = (_targetIndex != -1);
+            _isHearingPlayer = GlobalDictionary.Sound[soundSources[_targetIndex].Type].ID == 0;
+            _isHearingSomething = GlobalDictionary.Sound[soundSources[_targetIndex].Type].ID != -1;
+            currentHashCode = soundSources[_targetIndex].HashCode;
 
-            if (_isHearingSomething)
+            if (_isSeenPlayer)
             {
+                _isHearingSomething = false;
+            }
+            else if (!_isSeenPlayer && !_isHearingPlayer && ignoringHashCode.Contains(currentHashCode))
+            {
+                _isHearingPlayer = false;
+                _isHearingSomething = false;
+            }
+            
+            if (_isHearingSomething || _isHearingPlayer)
+            {
+                targetHashCode = currentHashCode;
                 hearingPoint = soundSources[_targetIndex].Point;
             }
         }

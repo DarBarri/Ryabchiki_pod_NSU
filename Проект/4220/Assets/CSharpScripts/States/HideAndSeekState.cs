@@ -13,6 +13,7 @@ public class HideAndSeekState : State
 
     public override void Action()
     {
+        enemy.agent.speed = 4f;
         if (enemy._isSeenPlayer)
         {
             enemy.targetPoint = enemy.visionPoint;

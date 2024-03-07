@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    public static EnemyManager Singleton { get; private set; }
     private GameObject[] _enemies;
     private SoundManager soundManager;
     void Awake()

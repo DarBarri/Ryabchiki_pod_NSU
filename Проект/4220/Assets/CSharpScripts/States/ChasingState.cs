@@ -12,6 +12,7 @@ public class ChasingState : State
 
     public override void Action()
     {
+        enemy.agent.speed = 12f;
         if ((enemy._isSeenPlayer || enemy._isHearingPlayer) && enemy.playerInAttackRange)
         {
             enemy.SetState(enemy.attackState);
@@ -22,7 +23,7 @@ public class ChasingState : State
         {
             enemy.targetPoint = enemy.visionPoint;
         }
-        else if (enemy._isHearingPlayer && !enemy._isSeenPlayer)
+        else if ((enemy._isHearingPlayer || enemy._isHearingSomething) && !enemy._isSeenPlayer)
         {
             enemy.targetPoint = enemy.hearingPoint;
         }

@@ -30,13 +30,22 @@ public class Controller : MonoBehaviour
     public float normalHeight = 2.0f;
     private SoundType _soundType;
 
+    private bool isRun = false, isSit = false;
+
     void Awake()
     {
         _player = GetComponent<CharacterController>();
     }
     private void Update()
     {
-        speed = Input.GetAxis("Shift") == 1 ? 12f : 7f;
+        isRun = Input.GetKey(KeyCode.LeftShift);
+        
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            isSit = !isSit;
+        }
+
+        speed = isSit ? 4f : (isRun ? 12f : 7f);
         //Если персонаж не двигается (в плане нажатия WASD), то и вектор направления нулевой. Если нажаты, то направление движения можно представить
         //как один из 8 положений радиуса на окружности со сдвигом на 45 градусов. При этом по итогу, независимо от направления, длина вектора должна 
         //быть равна единице. Положения относительно поворота камеры, потому после надо преобразовать из локали в глобаль
@@ -70,6 +79,11 @@ public class Controller : MonoBehaviour
             case 7:
             {
                 _soundType = SoundType.Walking;
+                break;
+            }
+            case 4:
+            {
+                _soundType = SoundType.SitDown;
                 break;
             }
             case 0:
