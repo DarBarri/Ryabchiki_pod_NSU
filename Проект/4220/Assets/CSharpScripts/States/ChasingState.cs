@@ -19,13 +19,23 @@ public class ChasingState : State
             
             return;
         }
-        else if (enemy._isSeenPlayer)
+        else if ((enemy._isSeenPlayer && !enemy.inHorde) || (enemy.inHorde && enemy.Horde.IsSeenPlayer))
         {
-            enemy.targetPoint = enemy.visionPoint;
+            enemy.targetPoint = enemy.inHorde? enemy.Horde.TargetPoint: enemy.visionPoint;
+            
+            if (!enemy.inHorde)
+            {
+                enemy.inHorde = true;
+            }
         }
-        else if ((enemy._isHearingPlayer || enemy._isHearingSomething) && !enemy._isSeenPlayer)
+        else if ((enemy._isHearingPlayer && !enemy.inHorde) || (enemy.inHorde && enemy.Horde.IsHearingPlayer))
         {
-            enemy.targetPoint = enemy.hearingPoint;
+            enemy.targetPoint = enemy.inHorde? enemy.Horde.TargetPoint: enemy.hearingPoint;
+            
+            if (!enemy.inHorde)
+            {
+                enemy.inHorde = true;
+            }
         }
         
         enemy.agent.speed = 12f;

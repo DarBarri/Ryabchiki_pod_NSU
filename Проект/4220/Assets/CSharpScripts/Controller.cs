@@ -1,41 +1,73 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
-    public GameObject cam;
-    
-    public GameObject player;
-    
-    public Camera mainCam;
-    
-    public LayerMask layer;
+    public bool isCrouching = false;
     
     public float speed = 7f;
     
-    private float _angle;
+    public float gravityValue = -9.81f;
+    
+    public float crouchHeight = 0.5f;
+    
+    public float normalHeight = 2.0f;
+    
+    public LayerMask layer;
+    
+    public Text text;
+    
+    public GameObject cam;
+    
+    public GameObject obj;
+    
+    public GameObject player;
+    
+    public GameObject trajectory;
+    
+    public Transform pointWeapon;
+    
+    public Camera mainCamera;
+    
+    public Animator animator;
+    
+    private int currentAmountAmmo = 100;
 
-    private CharacterController _player = null;
+    private bool isRun = false, isSit = false;
+    
+    private float _angle;
 
     private Vector3 _moveDirection = Vector3.zero;
 
     private Vector3 _point;
 
-    public Animator animator;
-    public float gravityValue = -9.81f;
-    public bool isCrouching = false;
-    public float crouchHeight = 0.5f;
-    public float normalHeight = 2.0f;
+    private WeaponType currentWeaponType;
+    
     private SoundType _soundType;
+    
+    private CharacterController _player = null;
+    
+    private GameObject stone;
+    
+    private Rigidbody stoneRigidbody;
 
-    private bool isRun = false, isSit = false;
+    private Transform rangeWeapon, meleeWeapon, scriptWeapon, projectileWeapon, implantWeapon;
+
+    private RangeWeapon rangeWeaponController;
 
     void Awake()
     {
+        currentWeaponType = WeaponType.Projectile;
+        rangeWeaponController = pointWeapon.GetComponent<RangeWeapon>();
+        rangeWeaponController.countAmmoThisType = currentAmountAmmo;
         _player = GetComponent<CharacterController>();
     }
+    
     private void Update()
     {
         isRun = Input.GetKey(KeyCode.LeftShift);
@@ -63,11 +95,11 @@ public class Controller : MonoBehaviour
         
         animator.SetFloat("speed", _moveDirection.magnitude * (Input.GetAxis("Shift") == 1 ? 2 : 1));
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            isCrouching = !isCrouching;
-            _player.height = isCrouching ? crouchHeight : normalHeight;
-        }
+        // if (Input.GetKeyDown(KeyCode.LeftControl))
+        // {
+        //     isCrouching = !isCrouching;
+        //     _player.height = isCrouching ? crouchHeight : normalHeight;
+        // }
 
         switch (speed)
         {
@@ -104,6 +136,119 @@ public class Controller : MonoBehaviour
 
         Vector3 smoothPosition = Vector3.Lerp(cam.transform.position, transform.position, 2.5f * Time.deltaTime);
         cam.transform.position = smoothPosition;
+
+        switch (currentWeaponType)
+        {
+            case WeaponType.Range:
+            {
+                if (Input.GetMouseButton(0) && rangeWeaponController.rechardeState == false)
+                {
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+                    Physics.Raycast(ray, out RaycastHit hit, 100, layer);
+
+                    rangeWeaponController.Shoot(player.transform, pointWeapon.position, hit.point);
+                }
+                else
+                {
+                    rangeWeaponController.CollingDown();
+                }
+
+                if (Input.GetMouseButton(1))
+                {
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        
+                    Physics.Raycast(ray, out RaycastHit hit, 100, layer);
+                    
+                    DrawArc(hit.point, (5f * Mathf.PI / 180));
+                }
+
+                break;
+            }
+            case WeaponType.Projectile:
+            {
+                if (Input.GetMouseButtonDown(1))
+                {
+                    stone = Instantiate(obj, transform.position + Vector3.up * 2, transform.rotation);
+                    stone.transform.parent = transform;
+                    
+                    stone.GetComponent<Throwing>().IsKinematic(true);
+                }
+                else if (Input.GetMouseButtonUp(1))
+                {
+                    stone.transform.parent = null;
+                    stone.GetComponent<Throwing>().IsKinematic(false);
+                
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                
+                    Physics.Raycast(ray, out RaycastHit hit, 100, layer);
+                
+                    Vector3 target = hit.point + hit.normal * 0.1f;
+                    
+                    stone.GetComponent<Throwing>().Throw(target);
+                }
+                else if (Input.GetMouseButton(1))
+                {
+                    stone.GetComponent<Throwing>().IsKinematic(true);
+                
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                
+                    Physics.Raycast(ray, out RaycastHit hit, 100, layer);
+                
+                    Vector3 target = hit.point + hit.normal * 0.1f;
+                    
+                    stone.GetComponent<Throwing>().ShowTrajectory(target);
+                }
+
+                break;
+            }
+        }
+
+        if (pointWeapon.GetComponent<RangeWeapon>().rechardeState == false)
+        {
+            currentAmountAmmo = pointWeapon.GetComponent<RangeWeapon>().countAmmoThisType;
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                pointWeapon.GetComponent<RangeWeapon>().Recharge(currentAmountAmmo);
+            }   
+        }
+
+        text.text = $"Ammo {pointWeapon.GetComponent<RangeWeapon>().weaponData.currentAmountAmmo}/{currentAmountAmmo}";
+    }
+
+    private void ChangeWeapon(WeaponType weaponType)
+    {
+        // очистка данных бывшего оружия или ещё чего хз
+        // switch (currentWeaponType)
+        // {
+        //
+        // }
+
+        currentWeaponType = weaponType;
+
+        switch (weaponType)
+        {
+            case WeaponType.Melee:
+            {
+                break;
+            }
+            case WeaponType.Range:
+            {
+                break;
+            }
+            case WeaponType.Script:
+            {
+                break;
+            }
+            case WeaponType.Projectile:
+            {
+                break;
+            }
+            case WeaponType.Implant:
+            {
+                break;
+            }
+        }
     }
 
     private void RotatePlayer()
@@ -111,11 +256,9 @@ public class Controller : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             speed = 4f;
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             
-            if (Physics.Raycast(ray, out hit, layer))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100, layer))
             {
                 _point = hit.point;
                 _point.y = player.transform.position.y;
@@ -129,5 +272,31 @@ public class Controller : MonoBehaviour
             Quaternion toRotation = Quaternion.LookRotation(_moveDirection, Vector3.up);
             player.transform.rotation = toRotation;
         }
+    }
+
+    private void DrawArc(Vector3 aimPoint, float angleDeviation)
+    {
+        Vector3 playerPosition = transform.position;
+        playerPosition.y += 1.5f;
+        Vector3 directionView = aimPoint - playerPosition;
+        directionView.y = 0f;
+
+        Vector3[] vertex = new Vector3[9];
+            
+        for (int i = -4; i <= 4; i++)
+        {
+            float sin = Mathf.Sin(angleDeviation * i / 4);
+            float cos = Mathf.Cos(angleDeviation * i / 4);
+            vertex[i + 4] = transform.position + new Vector3(directionView.x * cos - directionView.z * sin, playerPosition.y, directionView.x * sin + directionView.z * cos);
+            
+            if (i > -4)
+            {
+                Debug.DrawLine(vertex[i + 3], vertex[i + 4], Color.blue);
+            }
+        }
+
+        Vector3 lowerPoint = playerPosition + directionView;
+        
+        Debug.DrawLine(lowerPoint, lowerPoint - Vector3.up * 1.5f, Color.green);
     }
 }

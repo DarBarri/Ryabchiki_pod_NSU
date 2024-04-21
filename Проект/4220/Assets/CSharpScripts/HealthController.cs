@@ -33,15 +33,17 @@ public class HealthController : MonoBehaviour
     private Debuff _stunning = new Debuff(false, 0f, 0f, 0f);
     private bool isStunning;
 
-    public void Damage(Vector3 point, WeaponType weaponType)
+    public void Damage(Vector3 point, Weapon weaponType)
     {
-        WeaponData data = GlobalDictionary.Weapon[weaponType];
+        WeaponData data = GlobalDictionary.Weapons[weaponType];
+        
+        // Debug.Log(health);
 
         isDeath(data.Range);
         
         if (!_bleeding.IsActive && data.BleedingChance > Random.Range(0f, 1f))
         {
-            Debug.Log("Bleeding");
+            // Debug.Log("Bleeding");
             _bleeding.IsActive = true;
             _bleeding.Damage = data.BleedingRange;
             _bleeding.Timer = 0f;
@@ -52,7 +54,7 @@ public class HealthController : MonoBehaviour
 
         if (!_fracture.IsActive && data.FractureChance > Random.Range(0f, 1f))
         {
-            Debug.Log("Fracture");
+            // Debug.Log("Fracture");
             _fracture.IsActive = true;
             _fracture.Damage = data.FractureRange;
 
@@ -62,7 +64,7 @@ public class HealthController : MonoBehaviour
         
         if (!_stunning.IsActive && data.StunningChance > Random.Range(0f, 1f))
         {
-            Debug.Log("Stunning");
+            // Debug.Log("Stunning");
 
             _stunning.IsActive = true;
             _stunning.Damage = 0f;

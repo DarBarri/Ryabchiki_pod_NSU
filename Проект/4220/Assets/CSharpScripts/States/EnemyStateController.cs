@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyStateController : MonoBehaviour
 {
+    public bool inHorde = false;
+    public EnemyHorde Horde;
     public NavMeshAgent agent;
     
     public Transform player;
@@ -26,7 +29,7 @@ public class EnemyStateController : MonoBehaviour
     public Vector3 targetPoint = Vector3.zero;
     private int _targetIndex;
     
-    private GameObject head;
+    public GameObject head;
     public bool _isSeenPlayer = false;
     public bool _isHearingPlayer = false;
     public bool _isHearingSomething = false;
@@ -43,14 +46,15 @@ public class EnemyStateController : MonoBehaviour
 
     private void Awake()
     {
+        inHorde = false;
+        GetComponent<AudioNotice>()._type = SoundType.Stand;
         SetState(patrollingState);
         targetPoint = transform.position;
         agent = GetComponent<NavMeshAgent>();
-        head = GameObject.Find("Head");
         ignoringHashCode = new List<int>();
     }
 
-    public void Action(SoundSource[] soundSources)
+    public void HearingAndVision(SoundSource[] soundSources)
     {
         List<int> newIgnoringHashCode = new List<int>();
         
@@ -100,10 +104,12 @@ public class EnemyStateController : MonoBehaviour
             _isHearingPlayer = false;
             _isHearingSomething = false;
         }
-
+    }
+    public void Action(EnemyHorde horde)
+    {
+        Horde = horde;
         playerInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
         
-        Debug.Log(currentState.name);
         if (!currentState.IsFinished)
         {
             currentState.Action();
@@ -111,6 +117,15 @@ public class EnemyStateController : MonoBehaviour
         else
         {
             SetState(patrollingState);
+        }
+
+        if (inHorde)
+        {
+            GetComponent<AudioNotice>()._type = SoundType.Running;
+        }
+        else
+        {
+            GetComponent<AudioNotice>()._type = SoundType.Stand;
         }
     }
 

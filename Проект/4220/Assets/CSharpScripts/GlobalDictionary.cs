@@ -3,6 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct EnemyHorde
+{
+    public bool IsSeenPlayer;
+    public bool IsHearingPlayer;
+    public Vector3 VisionPoint;
+    public Vector3 HearingPoint;
+    public Vector3 TargetPoint;
+
+    public EnemyHorde(bool isSeenPlayer, bool isHearingPlayer, Vector3 visionPoint, Vector3 hearingPoint, Vector3 targetPoint)
+    {
+        IsSeenPlayer = isSeenPlayer;
+        IsHearingPlayer = isHearingPlayer;
+        VisionPoint = visionPoint;
+        HearingPoint = hearingPoint;
+        TargetPoint = targetPoint;
+    }
+}
+
 public struct SoundSource
 {
     public int HashCode;
@@ -27,6 +45,7 @@ public struct SoundData
         Radius = radius;
     }
 }
+
 public struct WeaponData
 {
     public int ID;
@@ -59,23 +78,23 @@ public struct WeaponData
 }
 public class GlobalDictionary : MonoBehaviour
 {
-    public static Dictionary<WeaponType, WeaponData> Weapon = new Dictionary<WeaponType, WeaponData>()
+    public static Dictionary<Weapon, WeaponData> Weapons = new Dictionary<Weapon, WeaponData>()
     {
-        { WeaponType.Pistol, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.AutoRifle, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Shotgun, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.NonAutoRifle, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.MachineGun, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.SniperRifle, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.SubMachineGun, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Machete, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Axe, new WeaponData(0, 10f, 1f, 1f, 0.1f, 2f, 0.1f, 10f) },
-        { WeaponType.Blockhead, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Knife, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Mace, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Fist, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Sword, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
-        { WeaponType.Saber, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) }
+        { Weapon.Pistol, new WeaponData(0, 0.5f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.AutoRifle, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Shotgun, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.NonAutoRifle, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.MachineGun, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.SniperRifle, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.SubMachineGun, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Machete, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Axe, new WeaponData(0, 10f, 1f, 1f, 0.1f, 2f, 0.1f, 10f) },
+        { Weapon.Blockhead, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Knife, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Mace, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Fist, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Sword, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) },
+        { Weapon.Saber, new WeaponData(0, 10f, 10f, 10f, 10f, 10f, 10f, 10f) }
     };
 
     public static Dictionary<SoundType, SoundData> Sound = new Dictionary<SoundType, SoundData>()
@@ -88,6 +107,8 @@ public class GlobalDictionary : MonoBehaviour
     };
 }
 
-public enum WeaponType {Pistol, AutoRifle, Shotgun, NonAutoRifle, MachineGun, SniperRifle, SubMachineGun, Machete, Axe, Blockhead, Knife, Mace, Fist, Sword, Saber}
+public enum Weapon {Pistol, AutoRifle, Shotgun, NonAutoRifle, MachineGun, SniperRifle, SubMachineGun, Machete, Axe, Blockhead, Knife, Mace, Fist, Sword, Saber}
 
 public enum SoundType {Running, Scream, Walking, SitDown, Stand}
+
+public enum WeaponType {Melee, Range, Script, Projectile, Implant}
