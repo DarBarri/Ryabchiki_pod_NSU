@@ -23,15 +23,28 @@ struct Debuff
 }
 public class HealthController : MonoBehaviour
 {
+    public Transform[] anchors;
     public Canvas canvas;
     public Image image;
     public float health;
+    public LimbType[] limbTypes;
     private float constSpeed = 7f;
     public float currentSpeed = 7f;
     private Debuff _bleeding = new Debuff(false, 0f, 0f, 0f);
     private Debuff _fracture = new Debuff(false, 0f, 0f, 0f);
     private Debuff _stunning = new Debuff(false, 0f, 0f, 0f);
     private bool isStunning;
+    public Anchor[] AnchorsInfo;
+
+    private void Start()
+    {
+        AnchorsInfo = new Anchor[anchors.Length];
+
+        for (int i = 0; i < anchors.Length; i++)
+        {
+            AnchorsInfo[i] = new Anchor(anchors[i].position, limbTypes[i]);
+        }
+    }
 
     public void Damage(Vector3 point, Weapon weaponType)
     {
@@ -121,5 +134,27 @@ public class HealthController : MonoBehaviour
         currentSpeed = constSpeed;
 
         _stunning.IsActive = false;
+    }
+
+    public Anchor[] ReturnAnchors(LimbType type)
+    {
+        List<int> indices = new List<int>();
+
+        for (int i = 0; i < anchors.Length; i++)
+        {
+            if (type == limbTypes[i])
+            {
+                indices.Add(i);
+            }
+        }
+        
+        AnchorsInfo = new Anchor[indices.Count];
+
+        for (int i = 0; i < indices.Count; i++)
+        {
+            AnchorsInfo[i] = new Anchor(anchors[indices[i]].position, limbTypes[indices[i]]);
+        }
+
+        return AnchorsInfo;
     }
 }

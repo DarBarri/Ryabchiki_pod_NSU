@@ -39,7 +39,7 @@ public class EnemyHearing : MonoBehaviour
                 Vector3.Distance(transform.position, point), layer,
                 QueryTriggerInteraction.Ignore);
 
-            Debug.DrawRay(ray.origin, ray.direction * dist, Color.red);
+            // Debug.DrawRay(ray.origin, ray.direction * dist, Color.red);
             Physics.Raycast(ray, out hit, Mathf.Infinity, layer, QueryTriggerInteraction.Ignore);
 
             float coef = 0.6f;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public struct EnemyHorde
 {
@@ -18,6 +19,19 @@ public struct EnemyHorde
         VisionPoint = visionPoint;
         HearingPoint = hearingPoint;
         TargetPoint = targetPoint;
+    }
+}
+
+public enum LimbType{Hand, Head, Body, Leg}
+public struct Anchor
+{
+    public Vector3 Position;
+    public LimbType LimbType;
+
+    public Anchor(Vector3 position, LimbType limbType)
+    {
+        Position = position;
+        LimbType = limbType;
     }
 }
 
