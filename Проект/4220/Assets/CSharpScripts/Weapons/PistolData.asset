@@ -16,9 +16,9 @@ MonoBehaviour:
   criticalDamage: 0
   criticalChance: 0
   maxDistance: 0
-  currentAmountAmmo: 50
+  currentAmountAmmo: 42
   maxAmountAmmo: 50
-  angleDeviation: 1.5
+  angleDeviation: 0.01
   minDelay: 0.1
   timeRecharge: 1
   accuracyHipCurve:

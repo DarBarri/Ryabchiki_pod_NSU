@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.ProBuilder;
@@ -66,6 +65,7 @@ public class Pistol : RangeWeapon
                 
                 if (isAnchorHit && (anchorHit.transform.gameObject.CompareTag("Head") || anchorHit.transform.gameObject.CompareTag("Hand") || anchorHit.transform.gameObject.CompareTag("Leg") || anchorHit.transform.gameObject.CompareTag("Body")))
                 {
+                    hitColliders[0].gameObject.GetComponent<HealthController>().Damage(Vector3.zero, Weapon.Pistol);
                     Debug.Log($"Hit! to {anchorHit.transform.gameObject.tag}");
                     Debug.DrawLine(shootPoint, anchorHit.point, Color.red, weaponData.minDelay / 2);
                 }

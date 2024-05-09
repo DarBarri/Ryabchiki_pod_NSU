@@ -214,10 +214,13 @@ public class Controller : MonoBehaviour
                 if (Input.GetMouseButton(0) && rangeWeaponController.rechardeState == false)
                 {
                     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                    ray.origin -= 1.9f * Vector3.up;
 
                     Physics.Raycast(ray, out RaycastHit hit, 100, layer);
 
                     rangeWeaponController.Shoot(player.transform, pointWeapon.position, hit.point, rangePriority);
+                    
+                    DrawArc(hit.point, (5f * Mathf.PI / 180));
                 }
                 else
                 {
@@ -227,7 +230,8 @@ public class Controller : MonoBehaviour
                 if (Input.GetMouseButton(1) && !Input.GetMouseButton(0))
                 {
                     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        
+                    ray.origin -= 1.9f * Vector3.up;
+                    
                     Physics.Raycast(ray, out RaycastHit hit, 100, layer);
                     
                     rangeWeaponController.Aim(player.transform, pointWeapon.position, hit.point, rangePriority);
@@ -349,7 +353,7 @@ public class Controller : MonoBehaviour
     private void DrawArc(Vector3 aimPoint, float angleDeviation)
     {
         Vector3 playerPosition = transform.position;
-        playerPosition.y += 1.5f;
+        playerPosition.y += 1.9f;
         Vector3 directionView = aimPoint - playerPosition;
         directionView.y = 0f;
 
@@ -359,7 +363,7 @@ public class Controller : MonoBehaviour
         {
             float sin = Mathf.Sin(angleDeviation * i / 4);
             float cos = Mathf.Cos(angleDeviation * i / 4);
-            vertex[i + 4] = transform.position + new Vector3(directionView.x * cos - directionView.z * sin, playerPosition.y, directionView.x * sin + directionView.z * cos);
+            vertex[i + 4] = playerPosition + new Vector3(directionView.x * cos - directionView.z * sin, 0f, directionView.x * sin + directionView.z * cos);
             
             if (i > -4)
             {
@@ -369,6 +373,6 @@ public class Controller : MonoBehaviour
 
         Vector3 lowerPoint = playerPosition + directionView;
         
-        Debug.DrawLine(lowerPoint, lowerPoint - Vector3.up * 1.5f, Color.green);
+        Debug.DrawLine(lowerPoint, lowerPoint - Vector3.up * 1.9f, Color.green);
     }
 }

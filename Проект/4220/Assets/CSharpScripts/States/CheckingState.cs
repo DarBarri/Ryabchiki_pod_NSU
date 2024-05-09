@@ -20,9 +20,9 @@ public class CheckingState : State
             
             return;
         }
-        else
+        else if (enemy._isHearingPlayer && enemy._isHearingSomething)
         {
-            enemy.targetPoint = enemy._isHearingSomething ? enemy.hearingPoint : enemy.targetPoint;
+            enemy.targetPoint = enemy.hearingPoint;
         }
         
         bool targetIsAchieve = AchieveTarget();

@@ -50,7 +50,7 @@ public class HealthController : MonoBehaviour
     {
         WeaponData data = GlobalDictionary.Weapons[weaponType];
         
-        // Debug.Log(health);
+        Debug.Log(health);
 
         isDeath(data.Range);
         

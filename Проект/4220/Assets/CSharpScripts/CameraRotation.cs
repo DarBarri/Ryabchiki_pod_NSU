@@ -14,11 +14,11 @@ public class CameraRotation : MonoBehaviour
     
     private float _nextAngle = 0f;
     
-    private float _currentAngle = 0f;
+    private float _currentAngle = 45f;
     
-    private const float Speed = 3f;
+    private const float Speed = 5f;
     
-    private const float Angle = 45f;
+    private const float Angle = 90f;
 
     private readonly Vector3 _rotation = new Vector3(0f, Speed, 0f);
     // Update is called once per frame
@@ -44,7 +44,7 @@ public class CameraRotation : MonoBehaviour
             transform.Rotate(-_rotation);
             _currentAngle += -Speed;
         }
-        
-        cam.transform.LookAt(player.transform.position + Vector3.up * 2.3f);
+        //
+        // cam.transform.LookAt(player.transform.position + Vector3.up * 2.3f);
     }
 }
