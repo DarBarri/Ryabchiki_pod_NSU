@@ -18,15 +18,9 @@ public class Controller : MonoBehaviour
     
     public float normalHeight = 2.0f;
     
-    public LimbType rangePriority;
-    
     public LayerMask layer;
     
     public Text text;
-
-    public Image head, body, hand, leg;
-
-    public int currentIndex = 0;
     
     public GameObject cam;
     
@@ -42,7 +36,7 @@ public class Controller : MonoBehaviour
     
     public Animator animator;
     
-    private int currentAmountAmmo = 10000;
+    private int currentAmountAmmo = 100;
 
     private bool isRun = false, isSit = false;
     
@@ -67,32 +61,8 @@ public class Controller : MonoBehaviour
     private RangeWeapon rangeWeaponController;
 
     void Awake()
-    {           
-        switch (rangePriority)
-        {
-            case LimbType.Head:
-            {
-                head.color = Color.black;
-                break;
-            }
-            case LimbType.Body:
-            {
-                body.color = Color.black;
-                break;
-            }
-            case LimbType.Hand:
-            {
-                hand.color = Color.black;
-                break;
-            }
-            case LimbType.Leg:
-            {
-                leg.color = Color.black;
-                break;
-            }
-        }
-        
-        currentWeaponType = WeaponType.Range;
+    {
+        currentWeaponType = WeaponType.Projectile;
         rangeWeaponController = pointWeapon.GetComponent<RangeWeapon>();
         rangeWeaponController.countAmmoThisType = currentAmountAmmo;
         _player = GetComponent<CharacterController>();
@@ -100,54 +70,14 @@ public class Controller : MonoBehaviour
     
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            switch (rangePriority)
-            {
-                case LimbType.Head:
-                {
-                    head.color = Color.white;
-                    body.color = Color.black;
-
-                    rangePriority = LimbType.Body;
-                    break;
-                }
-                case LimbType.Body:
-                {
-                    body.color = Color.white;
-                    hand.color = Color.black;
-
-                    rangePriority = LimbType.Hand;
-                    break;
-                }
-                case LimbType.Hand:
-                {
-                    hand.color = Color.white;
-                    
-                    leg.color = Color.black;
-
-                    rangePriority = LimbType.Leg;
-                    break;
-                }
-                case LimbType.Leg:
-                {
-                    leg.color = Color.white;
-
-                    head.color = Color.black;
-
-                    rangePriority = LimbType.Head;
-                    break;
-                }
-            }
-        }
-        isRun = Input.GetAxis("Shift") != 0;
+        isRun = Input.GetKey(KeyCode.LeftShift);
         
-        if (Input.GetAxis("Cancel") == 0)
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             isSit = !isSit;
         }
 
-        speed = isRun ? 12f : 7f;
+        speed = isSit ? 4f : (isRun ? 12f : 7f);
         //Если персонаж не двигается (в плане нажатия WASD), то и вектор направления нулевой. Если нажаты, то направление движения можно представить
         //как один из 8 положений радиуса на окружности со сдвигом на 45 градусов. При этом по итогу, независимо от направления, длина вектора должна 
         //быть равна единице. Положения относительно поворота камеры, потому после надо преобразовать из локали в глобаль
@@ -218,23 +148,25 @@ public class Controller : MonoBehaviour
 
                     Physics.Raycast(ray, out RaycastHit hit, 100, layer);
 
+<<<<<<< HEAD
                     rangeWeaponController.Shoot(player.transform, pointWeapon.position, hit.point, rangePriority);
                     
                     DrawArc(hit.point, (5f * Mathf.PI / 180));
+=======
+                    rangeWeaponController.Shoot(player.transform, pointWeapon.position, hit.point);
+>>>>>>> parent of d3b240b (Upgrade of shooting)
                 }
                 else
                 {
                     rangeWeaponController.CollingDown();
                 }
 
-                if (Input.GetMouseButton(1) && !Input.GetMouseButton(0))
+                if (Input.GetMouseButton(1))
                 {
                     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                     ray.origin -= 1.9f * Vector3.up;
                     
                     Physics.Raycast(ray, out RaycastHit hit, 100, layer);
-                    
-                    rangeWeaponController.Aim(player.transform, pointWeapon.position, hit.point, rangePriority);
                     
                     DrawArc(hit.point, (5f * Mathf.PI / 180));
                 }
@@ -331,7 +263,7 @@ public class Controller : MonoBehaviour
     {
         if (Input.GetMouseButton(1))
         {
-            // speed = 4f;
+            speed = 4f;
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             
             if (Physics.Raycast(ray, out RaycastHit hit, 100, layer))

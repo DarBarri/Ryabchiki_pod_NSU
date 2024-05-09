@@ -29,9 +29,9 @@ public abstract class RangeWeapon : MonoBehaviour
     // }
     
     public RangeWeaponDescript weaponData;
-    public abstract void Shoot(Transform player, Vector3 shootPoint, Vector3 point, LimbType rangePriority);
+    public abstract void Shoot(Transform player, Vector3 shootPoint, Vector3 point);
 
-    public abstract void Aim(Transform player, Vector3 shootPoint, Vector3 point, LimbType rangePriority);
+    public abstract void AimedShoot(Transform playerPosition, Vector3 point);
 
     public abstract void Recharge(int playerCountAmmo);
 

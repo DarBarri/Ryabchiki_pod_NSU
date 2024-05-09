@@ -16,10 +16,17 @@ MonoBehaviour:
   criticalDamage: 0
   criticalChance: 0
   maxDistance: 0
+<<<<<<< HEAD
   currentAmountAmmo: 42
   maxAmountAmmo: 50
   angleDeviation: 0.01
   minDelay: 0.1
+=======
+  currentAmountAmmo: 10
+  maxAmountAmmo: 10
+  angleDeviation: 1
+  minDelay: 0.25
+>>>>>>> parent of d3b240b (Upgrade of shooting)
   timeRecharge: 1
   accuracyHipCurve:
     serializedVersion: 2
@@ -97,7 +104,7 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.85
+      time: 0.7977417
       value: -1.25
       inSlope: 1.1305743
       outSlope: 1.1305743
@@ -106,7 +113,7 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1
+      time: 0.9
       value: 2.5
       inSlope: 2.0269294
       outSlope: 2.0269294
